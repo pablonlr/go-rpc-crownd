@@ -65,3 +65,9 @@ func (client *Client) DecodeRawTransaction(hex string) (*GetRawTxResponse, error
 	return &tx, nil
 
 }
+
+func (client *Client) SignRawTx(hex string) (string, error) {
+	//in development :)
+	var err error
+	return "", err
+}
