@@ -3,10 +3,11 @@ package crownd
 import "encoding/json"
 
 type GetRawTxResponse struct {
-	TxID     string             `json:"txid"`
-	Version  int                `json:"version"`
-	Locktime int                `json:"locktime"`
-	Vin      []*TxInputResponse `json:"vin"`
+	TxID     string              `json:"txid"`
+	Version  int                 `json:"version"`
+	Locktime int                 `json:"locktime"`
+	Vin      []*TxInputResponse  `json:"vin"`
+	Vout     []*TxOutputResponse `json:"vout"`
 }
 
 type TxInputResponse struct {
