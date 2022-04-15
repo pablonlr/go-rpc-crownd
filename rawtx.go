@@ -60,8 +60,8 @@ func (client *Client) DecodeRawTransaction(hex string) (*GetRawTxResponse, error
 	if resperr := parseErr(err, resp); resperr != nil {
 		return nil, resperr
 	}
-	tx := &GetRawTxResponse{}
-	err = json.Unmarshal(resp.Result, tx)
-	return tx, nil
+	tx := GetRawTxResponse{}
+	err = json.Unmarshal(resp.Result, &tx)
+	return &tx, nil
 
 }
