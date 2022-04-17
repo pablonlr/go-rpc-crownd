@@ -36,3 +36,16 @@ func (client *Client) GetInfo() (*GetInfoResponse, error) {
 	}
 	return getinforesp, nil
 }
+
+func (client *Client) GetBlockCount() (int, error) {
+	resp, err := client.Request("getblockcount")
+	if resperr := parseErr(err, resp); resperr != nil {
+		return 0, resperr
+	}
+	blockcount := 0
+	err = json.Unmarshal(resp.Result, &blockcount)
+	if err != nil {
+		return 0, err
+	}
+	return blockcount, nil
+}
