@@ -56,6 +56,16 @@ func (client *Client) GetRawTransaction(txid string) (string, error) {
 	return hex, nil
 }
 
+func (client *Client) GetRawTransactionDecoded(txid string) (*GetRawTxResponse, error) {
+	resp, err := client.Request("getrawtransaction", txid, 1)
+	if resperr := parseErr(err, resp); resperr != nil {
+		return nil, resperr
+	}
+	tx := GetRawTxResponse{}
+	err = json.Unmarshal(resp.Result, &tx)
+	return &tx, nil
+}
+
 func (client *Client) DecodeRawTransaction(hex string) (*GetRawTxResponse, error) {
 	resp, err := client.Request("decoderawtransaction", hex)
 	if resperr := parseErr(err, resp); resperr != nil {
