@@ -36,7 +36,7 @@ type TxOutputScript struct {
 	Addresses []string `json:"addresses"`
 }
 
-func (client *Client) SendRawTx(txHex string) (string, error) {
+func (client *Client) SendRawTx(txHex string) (string, *CrownError) {
 	resp, err := client.Request("sendrawtransaction", txHex)
 	if resperr := parseErr(err, resp); resperr != nil {
 		return "", resperr
@@ -46,7 +46,7 @@ func (client *Client) SendRawTx(txHex string) (string, error) {
 	return s, nil
 }
 
-func (client *Client) GetRawTransaction(txid string) (string, error) {
+func (client *Client) GetRawTransaction(txid string) (string, *CrownError) {
 	resp, err := client.Request("getrawtransaction", txid)
 	if resperr := parseErr(err, resp); resperr != nil {
 		return "", resperr
@@ -56,7 +56,7 @@ func (client *Client) GetRawTransaction(txid string) (string, error) {
 	return hex, nil
 }
 
-func (client *Client) GetRawTransactionDecoded(txid string) (*GetRawTxResponse, error) {
+func (client *Client) GetRawTransactionDecoded(txid string) (*GetRawTxResponse, *CrownError) {
 	resp, err := client.Request("getrawtransaction", txid, 1)
 	if resperr := parseErr(err, resp); resperr != nil {
 		return nil, resperr
@@ -66,7 +66,7 @@ func (client *Client) GetRawTransactionDecoded(txid string) (*GetRawTxResponse, 
 	return &tx, nil
 }
 
-func (client *Client) DecodeRawTransaction(hex string) (*GetRawTxResponse, error) {
+func (client *Client) DecodeRawTransaction(hex string) (*GetRawTxResponse, *CrownError) {
 	resp, err := client.Request("decoderawtransaction", hex)
 	if resperr := parseErr(err, resp); resperr != nil {
 		return nil, resperr
@@ -77,8 +77,8 @@ func (client *Client) DecodeRawTransaction(hex string) (*GetRawTxResponse, error
 
 }
 
-func (client *Client) SignRawTx(hex string) (string, error) {
+func (client *Client) SignRawTx(hex string) (string, *CrownError) {
 	//in development :)
 	var err error
-	return "", err
+	return "", newCrownErrorFromError(err)
 }

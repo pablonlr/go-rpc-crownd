@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-//NFTProtocol represents the information of a Non-Fungible Token Protocol in a Crown logic
+// NFTProtocol represents the information of a Non-Fungible Token Protocol in a Crown logic
 type NFTProtocol struct {
 	ID                     string `json:"nftProtocolId"`
 	Name                   string `json:"tokenProtocolName"`
@@ -48,7 +48,7 @@ const (
 	SignPayer
 )
 
-func (client *Client) RegisterNFTProtocol(ID, name, tokenProtoOwnerAddr string, nftRegSign NFTSignCode, metadataMimeType, metadataSchemaUri string, isTokenTransferible, isMetadataEmbedded bool, maxMetadataSize uint8) (string, error) {
+func (client *Client) RegisterNFTProtocol(ID, name, tokenProtoOwnerAddr string, nftRegSign NFTSignCode, metadataMimeType, metadataSchemaUri string, isTokenTransferible, isMetadataEmbedded bool, maxMetadataSize uint8) (string, *CrownError) {
 	resp, err := client.Request("nftproto", "register", ID, name, tokenProtoOwnerAddr, strconv.Itoa(int(nftRegSign)), metadataMimeType, metadataSchemaUri, isTokenTransferible, isMetadataEmbedded, strconv.Itoa(int(maxMetadataSize)))
 	if resperr := parseErr(err, resp); resperr != nil {
 		return "", resperr
@@ -58,14 +58,14 @@ func (client *Client) RegisterNFTProtocol(ID, name, tokenProtoOwnerAddr string, 
 
 // GET NFT Protocol
 
-func (client *Client) GetNFTProtocol(ID string) (*NFTProtocol, error) {
+func (client *Client) GetNFTProtocol(ID string) (*NFTProtocol, *CrownError) {
 	return client.getNFTProtocol("get", ID)
 }
 
-func (client *Client) GetNFTProtocolByTxID(TxID string) (*NFTProtocol, error) {
+func (client *Client) GetNFTProtocolByTxID(TxID string) (*NFTProtocol, *CrownError) {
 	return client.getNFTProtocol("getbytxid", TxID)
 }
-func (client *Client) getNFTProtocol(getmethod, ID string) (*NFTProtocol, error) {
+func (client *Client) getNFTProtocol(getmethod, ID string) (*NFTProtocol, *CrownError) {
 	resp, err := client.Request("nftproto", getmethod, ID)
 	if resperr := parseErr(err, resp); resperr != nil {
 		return nil, resperr
@@ -73,7 +73,7 @@ func (client *Client) getNFTProtocol(getmethod, ID string) (*NFTProtocol, error)
 	getproto := &NFTProtocol{}
 	err = json.Unmarshal(resp.Result, getproto)
 	if err != nil {
-		return nil, err
+		return nil, newCrownErrorFromError(err)
 	}
 	return getproto, nil
 }
@@ -82,7 +82,7 @@ func (client *Client) getNFTProtocol(getmethod, ID string) (*NFTProtocol, error)
 
 //LIST NFT Protocols
 
-func (client *Client) ListNFTProtocolsExplicit(count int, skiptxs int, toHeight string) ([]NFTProtocol, error) {
+func (client *Client) ListNFTProtocolsExplicit(count int, skiptxs int, toHeight string) ([]NFTProtocol, *CrownError) {
 	resp, err := client.Request("nftproto", "list", strconv.Itoa(count), strconv.Itoa(skiptxs), toHeight)
 	if resperr := parseErr(err, resp); resperr != nil {
 		return nil, resperr
@@ -90,22 +90,22 @@ func (client *Client) ListNFTProtocolsExplicit(count int, skiptxs int, toHeight 
 	protos := []NFTProtocol{}
 	err = json.Unmarshal(resp.Result, &protos)
 	if err != nil {
-		return nil, err
+		return nil, newCrownErrorFromError(err)
 	}
 	return protos, nil
 
 }
-func (client *Client) ListNFTProtocolsToBlockN(count int, toBlockHeight int) ([]NFTProtocol, error) {
+func (client *Client) ListNFTProtocolsToBlockN(count int, toBlockHeight int) ([]NFTProtocol, *CrownError) {
 	return client.ListNFTProtocolsExplicit(count, 0, strconv.Itoa(toBlockHeight))
 }
 
-func (client *Client) ListLastNFTProtocols(count int) ([]NFTProtocol, error) {
+func (client *Client) ListLastNFTProtocols(count int) ([]NFTProtocol, *CrownError) {
 	return client.ListNFTProtocolsExplicit(count, 0, "*")
 }
 
 //
 
-func (client *Client) OwnerOfProto(nftProtoID string) (string, error) {
+func (client *Client) OwnerOfProto(nftProtoID string) (string, *CrownError) {
 	resp, err := client.Request("nftproto", "ownerof", nftProtoID)
 	if resperr := parseErr(err, resp); resperr != nil {
 		return "", resperr

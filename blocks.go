@@ -18,7 +18,7 @@ type GetBlockResponse struct {
 	NextBlockHash     string   `json:"nextblockhash"`
 }
 
-func (client *Client) GetBlock(hash string) (*GetBlockResponse, error) {
+func (client *Client) GetBlock(hash string) (*GetBlockResponse, *CrownError) {
 	resp, err := client.Request("getblock", hash)
 	if resperr := parseErr(err, resp); resperr != nil {
 		return nil, resperr
@@ -26,12 +26,12 @@ func (client *Client) GetBlock(hash string) (*GetBlockResponse, error) {
 	getblockresp := &GetBlockResponse{}
 	err = json.Unmarshal(resp.Result, getblockresp)
 	if err != nil {
-		return nil, err
+		return nil, newCrownErrorFromError(err)
 	}
 	return getblockresp, nil
 }
 
-func (client *Client) GetBlockCount() (int, error) {
+func (client *Client) GetBlockCount() (int, *CrownError) {
 	resp, err := client.Request("getblockcount")
 	if resperr := parseErr(err, resp); resperr != nil {
 		return 0, resperr
@@ -39,7 +39,7 @@ func (client *Client) GetBlockCount() (int, error) {
 	blockcount := 0
 	err = json.Unmarshal(resp.Result, &blockcount)
 	if err != nil {
-		return 0, err
+		return 0, newCrownErrorFromError(err)
 	}
 	return blockcount, nil
 }

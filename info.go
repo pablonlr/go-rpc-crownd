@@ -24,7 +24,7 @@ type GetInfoResponse struct {
 	Errors          json.RawMessage `json:"errors"`
 }
 
-func (client *Client) GetInfo() (*GetInfoResponse, error) {
+func (client *Client) GetInfo() (*GetInfoResponse, *CrownError) {
 	resp, err := client.Request("getinfo")
 	if resperr := parseErr(err, resp); resperr != nil {
 		return nil, resperr
@@ -32,7 +32,7 @@ func (client *Client) GetInfo() (*GetInfoResponse, error) {
 	getinforesp := &GetInfoResponse{}
 	err = json.Unmarshal(resp.Result, getinforesp)
 	if err != nil {
-		return nil, err
+		return nil, newCrownErrorFromError(err)
 	}
 	return getinforesp, nil
 }
