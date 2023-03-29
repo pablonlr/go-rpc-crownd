@@ -75,17 +75,22 @@ func (client *Client) ListLastNFTokensInProtocolOwnerBy(nftproto, ownerAddr stri
 // GetNFToken Obtain a registered NFT by a given protocol and unique NFToken ID.
 // Return a pointer to the NFToken representation.
 func (client *Client) GetNFToken(protocolID, tokenID string) (*NFToken, *CrownError) {
-	return client.getNFToken("get", protocolID, tokenID)
+	resp, err := client.Request("nftoken", "get", protocolID, tokenID)
+	if resperr := parseErr(err, resp); resperr != nil {
+		return nil, resperr
+	}
+	token := NFToken{}
+	err = json.Unmarshal(resp.Result, &token)
+	if err != nil {
+		return nil, newCrownErrorFromError(err)
+	}
+	return &token, nil
 }
 
 // GetNFTokenByTxID Obtain a registered NFT by the registration transaction ID.
 // Return a pointer to the NFToken representation.
 func (client *Client) GetNFTokenByTxID(txID string) (*NFToken, *CrownError) {
-	return client.getNFToken("getbytxid", txID)
-}
-
-func (client *Client) getNFToken(params ...string) (*NFToken, *CrownError) {
-	resp, err := client.Request("nftoken", params)
+	resp, err := client.Request("nftoken", "getbttxid", txID)
 	if resperr := parseErr(err, resp); resperr != nil {
 		return nil, resperr
 	}
