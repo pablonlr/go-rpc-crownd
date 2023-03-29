@@ -90,7 +90,7 @@ func (client *Client) GetNFToken(protocolID, tokenID string) (*NFToken, *CrownEr
 // GetNFTokenByTxID Obtain a registered NFT by the registration transaction ID.
 // Return a pointer to the NFToken representation.
 func (client *Client) GetNFTokenByTxID(txID string) (*NFToken, *CrownError) {
-	resp, err := client.Request("nftoken", "getbttxid", txID)
+	resp, err := client.Request("nftoken", "getbytxid", txID)
 	if resperr := parseErr(err, resp); resperr != nil {
 		return nil, resperr
 	}
