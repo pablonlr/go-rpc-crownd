@@ -106,12 +106,12 @@ func (client *Client) doRequest(reqRPC *request) (*response, error) {
 	return resp, nil
 }
 
-func parseErr(reqerr error, resp *response) (err error) {
+func parseErr(reqerr error, resp *response) (err *CrownError) {
 	if reqerr != nil {
-		return reqerr
+		return newCrownErrorFromError(reqerr)
 	}
 	if resp != nil && resp.Err != nil {
-		err = errors.New(fmt.Sprintf("Error code: %d\nError message: %s", resp.Err.Code, resp.Err.Message))
+		return newCrownErrorFromResponseError(resp.Err)
 	}
 	return err
 }
