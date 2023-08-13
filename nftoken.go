@@ -116,6 +116,20 @@ func (client *Client) TotalSupply(protocolID string) (int, *CrownError) {
 	return supply, nil
 }
 
+// GlobalSupply Total of NFTokens registered on Crown NFT Framework
+func (client *Client) GlobalSupply(protocolID string) (int, *CrownError) {
+	resp, err := client.Request("nftoken", "totalsupply")
+	if resperr := parseErr(err, resp); resperr != nil {
+		return -1, resperr
+	}
+	supply := 0
+	err = json.Unmarshal(resp.Result, &supply)
+	if err != nil {
+		return -1, newCrownErrorFromError(err)
+	}
+	return supply, nil
+}
+
 // BalanceOf Number of NFTokens owned by a given CRW address.
 func (client *Client) BalanceOf(address string) (int, *CrownError) {
 	return client.balanceOf(address)
