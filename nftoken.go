@@ -117,7 +117,7 @@ func (client *Client) TotalSupply(protocolID string) (int, *CrownError) {
 }
 
 // GlobalSupply Total of NFTokens registered on Crown NFT Framework
-func (client *Client) GlobalSupply(protocolID string) (int, *CrownError) {
+func (client *Client) GlobalSupply() (int, *CrownError) {
 	resp, err := client.Request("nftoken", "totalsupply")
 	if resperr := parseErr(err, resp); resperr != nil {
 		return -1, resperr
